@@ -2,7 +2,8 @@
 
 An AI-powered travel planning agent that generates detailed day-by-day itineraries with interactive maps, grounded in real place data.
 
-![Travel Planner Screenshot](assets/screenshot.png)
+<img width="1851" height="881" alt="image" src="https://github.com/user-attachments/assets/93d77e8c-280a-4e08-b4d2-65a64b05cdfa" />
+
 
 ## What This Agent Can Do
 
