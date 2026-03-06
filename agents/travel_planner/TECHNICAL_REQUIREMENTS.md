@@ -1,181 +1,144 @@
 # Technical Requirements Document: Travel Planner Agent
 
-## Architecture Overview
+## How It Works (End to End)
+
+Here's what happens when a user clicks "Plan My Trip":
 
 ```
-User (Streamlit UI)
-    │
-    ├── Form Input (destination, dates, budget, interests)
-    │
-    ▼
-app.py (Streamlit)
-    │
-    ├── Calls api_clients.py ──► Foursquare API (real places)
-    │
-    ├── Calls agent.py ──► Gemini 2.0 Flash (itinerary generation)
-    │                       │
-    │                       ├── System prompt + trip details + place data
-    │                       └── Returns structured JSON (Pydantic validated)
-    │
-    ├── Renders itinerary (day-by-day expanders)
-    ├── Renders map (Folium) with daily pins + routes
-    ├── Chat refinement loop (user ↔ Gemini)
-    │
-    └── Export (Markdown download)
+1. USER fills form (destination, dates, budget, interests)
+          │
+          ▼
+2. APP calls Foursquare API with destination + interests
+   → Gets back real places: names, addresses, coordinates
+   → If Foursquare fails or no key: skips this, agent still works
+          │
+          ▼
+3. APP builds a prompt combining:
+   - System instruction (travel planner persona + rules)
+   - Trip details from the form
+   - Real place data from Foursquare
+          │
+          ▼
+4. APP sends prompt to Gemini 2.0 Flash
+   - Uses structured output mode (responseSchema = Itinerary model)
+   - Gemini returns valid JSON matching our Pydantic schema
+   - Response is validated through Pydantic
+          │
+          ▼
+5. APP renders the itinerary:
+   - Summary bar (destination, days, cost)
+   - Folium map with color-coded pins per day + route lines
+   - Day-by-day expanders with activities, meals, costs
+   - Local tips + packing suggestions
+          │
+          ▼
+6. USER can REFINE via chat:
+   - User types "make day 2 more relaxed"
+   - App sends current itinerary JSON + user request to Gemini
+   - Gemini returns the FULL updated itinerary (not a diff)
+   - UI re-renders with changes
+   - Multi-turn: up to 10 exchanges, preserving context
+          │
+          ▼
+7. USER can EXPORT as Markdown download
 ```
+
+### Why this architecture?
+- **Foursquare before Gemini** (not function-calling): The agent always needs place data for an itinerary. There's no decision about "should I look up places?" — it always should. So we call the API upfront and inject the data into the prompt. Simpler and more predictable than tool-use loops.
+- **Full replacement on refinement** (not diff/patch): When the user changes day 2, Gemini returns the entire itinerary, not just day 2. This avoids merge logic bugs. The token cost is trivial — a 7-day itinerary is ~2-3K tokens.
+- **Structured JSON output**: Gemini's `responseSchema` parameter forces it to return valid JSON matching our Pydantic models. No regex parsing, no "please format as JSON" in the prompt.
 
 ## File Structure
 
 ```
 agents/travel_planner/
-├── app.py              # Streamlit entry point: layout, forms, chat, map, session state
-├── agent.py            # Gemini integration: prompts, structured output, multi-turn chat
-├── models.py           # Pydantic models: Activity, DayPlan, Itinerary, TripInput
-├── api_clients.py      # Foursquare API wrapper with error handling
-├── map_builder.py      # Folium map generation: pins per day, color-coded, route lines
-├── export.py           # Markdown export of itinerary
-├── config.py           # Constants, prompt templates, Foursquare category mappings
-├── requirements.txt
-├── .env.example
-├── README.md
-└── TECHNICAL_REQUIREMENTS.md
+├── app.py              # Streamlit UI: form, map, itinerary display, chat, export
+├── agent.py            # Gemini calls: generate + refine itineraries
+├── models.py           # Pydantic data models (the contract between all components)
+├── api_clients.py      # Foursquare API: fetch real places by destination + interests
+├── map_builder.py      # Folium map: color-coded pins, route lines, popups
+├── export.py           # Convert itinerary to Markdown for download
+├── config.py           # API keys, constants, system prompt, interest-to-category mapping
+├── requirements.txt    # 7 Python dependencies
+├── .env.example        # Template for API keys
+├── README.md           # Product description + setup
+└── TECHNICAL_REQUIREMENTS.md  # This file
 ```
 
-## Data Models (models.py)
-
-```python
-class TripInput:
-    destination: str
-    start_date: date
-    end_date: date
-    budget_tier: str          # "Budget" | "Moderate" | "Luxury"
-    interests: list[str]      # ["Food", "History", "Nature", ...]
-    notes: str                # Free-form special requests
-
-class MealRecommendation:
-    restaurant_name: str
-    cuisine: str
-    price_range: str          # "$", "$$", "$$$"
-
-class Activity:
-    time_slot: str            # "morning", "afternoon", "evening"
-    time_range: str           # "09:00 - 11:30"
-    name: str                 # "Visit the Colosseum"
-    location: str             # Address or area name
-    latitude: float           # For map pins
-    longitude: float          # For map pins
-    description: str          # 2-3 sentences
-    estimated_cost_usd: float
-    category: str             # "History", "Food", "Nature"
-    meal: MealRecommendation | None
-
-class DayPlan:
-    day_number: int
-    date: str
-    theme: str                # "Ancient Rome & Historic Center"
-    weather_note: str         # Gemini's seasonal knowledge
-    activities: list[Activity]
-
-class Itinerary:
-    destination: str
-    total_days: int
-    currency: str
-    estimated_total_cost_usd: float
-    local_tips: list[str]     # 3-5 tips (tipping, transit, safety)
-    packing_suggestions: list[str]
-    days: list[DayPlan]
-```
-
-Key: Activities include `latitude`/`longitude` so we can plot them on the map without a separate geocoding call. Gemini provides these as part of structured output.
-
-## Gemini Integration (agent.py)
-
-**Model**: `gemini-2.0-flash` via `google-generativeai` SDK
-
-**Structured output**: Use `response_mime_type="application/json"` + `response_schema` mapped to the Pydantic models. Gemini returns valid JSON matching our schema directly.
-
-**Prompt flow**:
-1. System prompt: "You are an expert travel planner..." (sets persona, rules, output expectations)
-2. Initial generation: Trip details + Foursquare place data injected into prompt
-3. Refinement: Current itinerary JSON + user's change request → returns full updated itinerary
-
-**Multi-turn chat**: Use `model.start_chat(history=...)` for refinements. Cap at 10 exchanges to stay within context limits.
-
-**Key design decision**: API calls (Foursquare) happen BEFORE the LLM call. We don't use Gemini's function-calling. The agent always needs place data for an itinerary - there's no conditional logic about when to call APIs. Simpler and more predictable.
-
-## Foursquare Integration (api_clients.py)
-
-**Endpoint**: `GET https://api.foursquare.com/v3/places/search`
-
-**Parameters**:
-- `near={destination}`
-- `categories={mapped_category_ids}` based on user interests
-- `limit=20`
-- `sort=RELEVANCE`
-
-**Category mapping** (user interest → Foursquare category ID):
-- Food → 13065 (Dining)
-- History → 16000 (Landmarks)
-- Nature → 16032 (Parks & Outdoors)
-- Art → 10027 (Museums)
-- Nightlife → 10032 (Nightlife)
-- Shopping → 17000 (Shopping)
-- Adventure → 16000 + 16032
-
-**Error handling**: If Foursquare fails, the agent still works - Gemini uses its own knowledge. Show a subtle warning that place data may be less precise.
-
-## Map (map_builder.py)
-
-**Library**: Folium + streamlit-folium
-
-**Features**:
-- One map showing all days
-- Color-coded pins per day (Day 1 = blue, Day 2 = green, Day 3 = red, etc.)
-- Popup on each pin: activity name + time
-- Dashed lines connecting activities within the same day (route visualization)
-- Auto-zoom to fit all pins
-
-## Streamlit Layout (app.py)
+### How the files connect:
 
 ```
-SIDEBAR                          MAIN AREA
-┌──────────────────┐  ┌──────────────────────────────────────┐
-│ Trip Details Form │  │ [Trip Summary Bar]                   │
-│                  │  │  Destination | Days | Budget | Cost   │
-│ Destination: ___ │  │                                      │
-│ Start: ___       │  │ [Interactive Map - Folium]            │
-│ End: ___         │  │                                      │
-│ Budget: [▼]      │  │ [Day 1 Expander]                     │
-│ Interests: [✓✓]  │  │   Morning: activity...               │
-│ Notes: ___       │  │   Afternoon: activity...             │
-│                  │  │   Evening: activity...               │
-│ [Plan My Trip]   │  │ [Day 2 Expander]                     │
-│                  │  │   ...                                │
-│ ─── Export ───   │  │                                      │
-│ [📥 Download MD] │  │ ─── Chat Refinement ───              │
-│                  │  │ [user]: make day 2 relaxed           │
-└──────────────────┘  │ [agent]: Updated! Swapped hiking...  │
-                      │ [___ type here ___]                  │
-                      └──────────────────────────────────────┘
+config.py ─────── loaded by everything (API keys, constants, prompts)
+     │
+models.py ─────── used by everything (shared data shapes)
+     │
+api_clients.py ── called by agent.py (fetches Foursquare data)
+     │
+agent.py ──────── called by app.py (generates/refines itineraries via Gemini)
+     │
+map_builder.py ── called by app.py (builds Folium map from itinerary)
+     │
+export.py ─────── called by app.py (converts itinerary to Markdown)
+     │
+app.py ────────── entry point (Streamlit: wires everything together)
 ```
 
-## Session State
+## Data Models
 
-| Key | Type | Purpose |
-|-----|------|---------|
-| `trip_input` | dict | Current form submission |
-| `itinerary` | Itinerary | Current itinerary object |
-| `chat_history` | list[dict] | Chat messages for display |
-| `gemini_chat` | ChatSession | Gemini multi-turn object |
-| `places_data` | list[dict] | Cached Foursquare results |
+The Pydantic models define the contract between Gemini, the UI, and export:
+
+```
+TripInput (what the user submits)
+├── destination: "Tokyo, Japan"
+├── start_date / end_date
+├── budget_tier: "Budget" | "Moderate" | "Luxury"
+├── interests: ["Food", "History", ...]
+└── notes: "vegetarian, traveling with kids"
+
+Itinerary (what Gemini returns, what the UI renders)
+├── destination, total_days, currency
+├── estimated_total_cost_usd
+├── local_tips: ["Tipping is not customary...", ...]
+├── packing_suggestions: ["Comfortable walking shoes", ...]
+└── days: [DayPlan]
+        ├── day_number, date, theme
+        ├── weather_note: "Warm and humid, ~28C"
+        └── activities: [Activity]
+                ├── time_slot: "morning" | "afternoon" | "evening"
+                ├── time_range: "09:00 - 11:30"
+                ├── name: "Visit Senso-ji Temple"
+                ├── location: "2 Chome-3-1 Asakusa, Taito City"
+                ├── latitude / longitude (for map pins)
+                ├── description: "2-3 sentences"
+                ├── estimated_cost_usd: 0.0
+                ├── category: "History"
+                └── meal: MealRecommendation | null
+                        ├── restaurant_name: "Sometaro"
+                        ├── cuisine: "Japanese Okonomiyaki"
+                        └── price_range: "$"
+```
+
+Activities include `latitude`/`longitude` so the map can plot pins without a separate geocoding API call — Gemini provides coordinates as part of its structured output.
+
+## Key Technical Decisions
+
+| Decision | Why |
+|----------|-----|
+| **Gemini 2.0 Flash** over Pro | Faster, cheaper, generous free tier (15 RPM, 1500 RPD). Quality is sufficient for structured itinerary generation. |
+| **`google-genai` SDK** (new) | The `google-generativeai` package is deprecated. New SDK uses `genai.Client` pattern. |
+| **Foursquare** over Google Places | Foursquare has a genuine free tier with no credit card. Google Places requires billing setup. |
+| **Streamlit** for UI | Fast to build, native chat components, good form handling, Folium integration via `streamlit-folium`. |
+| **No database** | Itineraries live in Streamlit session state. Export covers "save my work". Keeps setup zero-infrastructure. |
+| **No LangChain** | Direct SDK calls are simpler, more transparent, and easier to debug for a standalone agent. |
 
 ## Error Handling
 
-| Scenario | Response |
-|----------|----------|
-| Gemini returns invalid JSON | Retry once, then show error with "Try again" button |
-| Gemini rate limited (429) | Show warning: "Please wait a moment" |
-| API key missing | Show specific error on app load with link to get the key |
-| Foursquare fails | Continue without place data, show subtle warning |
-| End date before start date | Form validation, inline error |
-| Trip > 14 days | Cap with warning message |
+| Scenario | What Happens |
+|----------|-------------|
+| No Google API key | App shows error on startup with link to get the key |
+| No Foursquare key | Agent works fine — uses Gemini's own knowledge instead of real place data |
+| Foursquare API fails | Silently falls back to Gemini-only mode |
+| Gemini returns bad JSON | Error shown with option to retry |
+| Gemini rate limited | Warning message: "Please wait a moment" |
+| End date before start date | Form validation blocks submission |
+| Trip longer than 14 days | Capped with a warning message |
