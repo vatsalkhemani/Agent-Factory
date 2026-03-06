@@ -19,7 +19,7 @@ Here's what happens when a user clicks "Plan My Trip":
    - Real place data from Foursquare
           │
           ▼
-4. APP sends prompt to Gemini 2.0 Flash
+4. APP sends prompt to Gemini 2.5 Flash
    - Uses structured output mode (responseSchema = Itinerary model)
    - Gemini returns valid JSON matching our Pydantic schema
    - Response is validated through Pydantic
@@ -120,11 +120,36 @@ Itinerary (what Gemini returns, what the UI renders)
 
 Activities include `latitude`/`longitude` so the map can plot pins without a separate geocoding API call — Gemini provides coordinates as part of its structured output.
 
+## APIs Used
+
+### Google Gemini 2.5 Flash (via `google-genai` SDK)
+The core LLM powering the agent. We use it for:
+- **Itinerary generation** - Takes trip details + Foursquare place data and produces a structured day-by-day plan
+- **Structured JSON output** - Uses `responseMimeType="application/json"` with `responseSchema=Itinerary` (our Pydantic model). Gemini is forced to return valid JSON matching our exact schema. No parsing hacks needed.
+- **Multi-turn chat refinement** - Uses `client.chats.create()` with conversation history so the agent remembers previous refinements
+- **Coordinate generation** - Gemini provides latitude/longitude for every activity, which feeds directly into the map. Eliminates the need for a separate geocoding API.
+- **Seasonal knowledge** - Instead of a weather API, Gemini uses its knowledge to estimate weather for the destination and season ("Clear skies, hot and sunny at 29-31C")
+
+### Foursquare Places API (v3)
+Provides real-world place data to ground the itinerary:
+- **Place search by destination + category** - We query `GET /v3/places/search` with `near={destination}` and category IDs mapped from user interests
+- **Category mapping** - User selects "Food" → we query Foursquare category 13065 (Dining). "History" → 16000 (Landmarks). "Nature" → 16032 (Parks). Etc.
+- **What we get back** - Place name, address, category, and geocoordinates. This data is injected into the Gemini prompt so it prefers real venues.
+- **Graceful degradation** - If the API key is missing or the call fails, the agent continues without it. Gemini uses its own knowledge instead.
+
+### Folium (map rendering)
+Not an external API — a Python library that generates interactive Leaflet.js maps:
+- **Color-coded markers** - Each day gets a different color (Day 1 = blue, Day 2 = green, Day 3 = red, etc.)
+- **Clickable popups** - Each pin shows activity name, time slot, time range, and cost
+- **Route lines** - Dashed lines connect activities within the same day
+- **Auto-zoom** - Map automatically fits to show all pins using `fit_bounds()`
+- **Streamlit integration** - Rendered via `streamlit-folium` bridge component
+
 ## Key Technical Decisions
 
 | Decision | Why |
 |----------|-----|
-| **Gemini 2.0 Flash** over Pro | Faster, cheaper, generous free tier (15 RPM, 1500 RPD). Quality is sufficient for structured itinerary generation. |
+| **Gemini 2.5 Flash** | Latest Gemini model. Fast, cheap, generous free tier (15 RPM, 1500 RPD). Excellent at structured JSON output and multi-step reasoning for itinerary planning. |
 | **`google-genai` SDK** (new) | The `google-generativeai` package is deprecated. New SDK uses `genai.Client` pattern. |
 | **Foursquare** over Google Places | Foursquare has a genuine free tier with no credit card. Google Places requires billing setup. |
 | **Streamlit** for UI | Fast to build, native chat components, good form handling, Folium integration via `streamlit-folium`. |
