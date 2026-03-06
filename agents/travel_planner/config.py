@@ -6,7 +6,7 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
 FOURSQUARE_API_KEY = os.getenv("FOURSQUARE_API_KEY", "")
 
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 MAX_TRIP_DAYS = 14
 MAX_CHAT_HISTORY = 10
