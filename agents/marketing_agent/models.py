@@ -1,4 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+
+
+def _coerce_to_str(v):
+    """Coerce dicts/lists to string — handles Gemini returning structured objects for string fields."""
+    if isinstance(v, dict):
+        parts = [str(val) for val in v.values() if val]
+        return " — ".join(parts)
+    if isinstance(v, list):
+        return ", ".join(str(i) for i in v)
+    return v
 
 
 # --- Research Models ---
@@ -60,6 +70,11 @@ class LinkedInPost(BaseModel):
     cta: str
     angle: str
 
+    @field_validator("hook", "body", "cta", "angle", mode="before")
+    @classmethod
+    def coerce_str(cls, v):
+        return _coerce_to_str(v)
+
 
 class TwitterThread(BaseModel):
     tweets: list[str]
@@ -71,6 +86,11 @@ class Email(BaseModel):
     body: str
     cta: str
 
+    @field_validator("subject", "preview_text", "body", "cta", mode="before")
+    @classmethod
+    def coerce_str(cls, v):
+        return _coerce_to_str(v)
+
 
 class EmailSequence(BaseModel):
     emails: list[Email]
@@ -81,6 +101,11 @@ class BlogSection(BaseModel):
     key_points: list[str]
     summary: str
 
+    @field_validator("heading", "summary", mode="before")
+    @classmethod
+    def coerce_str(cls, v):
+        return _coerce_to_str(v)
+
 
 class BlogOutline(BaseModel):
     title: str
@@ -88,11 +113,21 @@ class BlogOutline(BaseModel):
     sections: list[BlogSection]
     conclusion: str
 
+    @field_validator("title", "intro", "conclusion", mode="before")
+    @classmethod
+    def coerce_str(cls, v):
+        return _coerce_to_str(v)
+
 
 class AdCopy(BaseModel):
     headline: str
     body: str
     cta: str
+
+    @field_validator("headline", "body", "cta", mode="before")
+    @classmethod
+    def coerce_str(cls, v):
+        return _coerce_to_str(v)
 
 
 class CampaignContent(BaseModel):
