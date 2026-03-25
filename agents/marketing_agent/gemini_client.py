@@ -24,6 +24,7 @@ class GeminiClient:
             max_output_tokens=8192,
             system_instruction=system_instruction if system_instruction else None,
         )
+        last_error = None
         for attempt in range(4):
             try:
                 response = self.client.models.generate_content(
@@ -36,6 +37,7 @@ class GeminiClient:
                     raise ValueError("Gemini returned empty response (possibly blocked by safety filters)")
                 return text
             except Exception as e:
+                last_error = e
                 err_str = str(e)
                 # Rate limit — back off and retry
                 if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
@@ -43,10 +45,15 @@ class GeminiClient:
                     print(f"Rate limited, waiting {wait}s (attempt {attempt + 1}/4)...")
                     time.sleep(wait)
                     continue
+                # Empty response — retry once
+                if "empty response" in err_str and attempt < 2:
+                    time.sleep(2)
+                    continue
                 if attempt < 1:
                     time.sleep(2)
                     continue
                 raise e
+        raise last_error or RuntimeError("All Gemini API attempts failed")
 
     def _clean_json_text(self, text: str) -> str:
         """Strip markdown fences and extract JSON from response."""
