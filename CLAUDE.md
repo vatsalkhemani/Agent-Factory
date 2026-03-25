@@ -23,6 +23,6 @@ Every agent in `agents/<agent-name>/` must have:
 | Agent | Directory | Status |
 |-------|-----------|--------|
 | Travel Planner Agent | `agents/travel_planner/` | Done (Gemini 2.5 Flash + Streamlit + Folium + Foursquare) |
+| Marketing Campaign Agent | `agents/marketing_agent/` | Done (Gemini 2.5 Flash Lite + Streamlit + BeautifulSoup) |
 | Text to Podcast Agent | `agents/text_to_podcast/` | Planned |
 | Investment Analyst Agent | `agents/investment_analyst/` | Planned |
-| Marketing Content Agent | `agents/marketing_agent/` | Planned |
