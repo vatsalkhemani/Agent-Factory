@@ -14,7 +14,7 @@ You can request any of these analysis operations:
 - "correlation": Correlation matrix. Params: {{"columns": ["col1", "col2", ...]}} (optional, uses all numeric if omitted)
 - "distribution": Histogram/value counts. Params: {{"column": "col_name", "bins": 20}}
 - "group_comparison": Group by + aggregate. Params: {{"group_column": "cat_col", "value_column": "num_col", "agg": "mean"}}
-- "time_trend": Time series trend. Params: {{"date_column": "date_col", "value_column": "num_col", "freq": "M"}}
+- "time_trend": Time series trend. Params: {{"date_column": "date_col", "value_column": "num_col", "freq": "ME"}}
 - "outlier_detection": Find outliers. Params: {{"column": "col_name", "method": "iqr"}}
 - "cross_tabulation": Cross-tab two categorical columns. Params: {{"column_1": "col1", "column_2": "col2"}}
 - "top_n": Top/bottom records. Params: {{"column": "col_name", "n": 10, "ascending": false}}

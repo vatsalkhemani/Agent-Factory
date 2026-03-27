@@ -201,7 +201,7 @@ class AnalysisToolkit:
             "aggregation": agg,
         }
 
-    def time_trend(self, date_column: str, value_column: str, freq: str = "M") -> dict:
+    def time_trend(self, date_column: str, value_column: str, freq: str = "ME") -> dict:
         """Resample time series data."""
         df_copy = self.df.copy()
         df_copy[date_column] = pd.to_datetime(df_copy[date_column], errors="coerce")

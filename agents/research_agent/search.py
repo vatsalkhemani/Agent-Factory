@@ -2,7 +2,7 @@ import time
 
 import requests
 from bs4 import BeautifulSoup
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 
 from config import SCRAPE_TIMEOUT, SEARCH_RESULTS_PER_QUERY, SEARCH_DELAY, MAX_CONTENT_CHARS
 from models import SearchResult, ScrapedPage
