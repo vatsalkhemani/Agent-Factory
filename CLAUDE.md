@@ -24,5 +24,6 @@ Every agent in `agents/<agent-name>/` must have:
 |-------|-----------|--------|
 | Travel Planner Agent | `agents/travel_planner/` | Done (Gemini 2.5 Flash + Streamlit + Folium + Foursquare) |
 | Marketing Campaign Agent | `agents/marketing_agent/` | Done (Gemini 2.5 Flash Lite + Streamlit + BeautifulSoup) |
-| Text to Podcast Agent | `agents/text_to_podcast/` | Planned |
-| Investment Analyst Agent | `agents/investment_analyst/` | Planned |
+| Research Agent | `agents/research_agent/` | Done (Gemini 2.5 Flash Lite + Streamlit + DuckDuckGo + BeautifulSoup) |
+| Job Application Agent | `agents/job_application_agent/` | In Progress |
+| Data Analyst Agent | `agents/data_analyst_agent/` | Planned |
