@@ -7,9 +7,10 @@ A collection of standalone AI agents, each solving a different real-world use ca
 | Agent | Category | Tech | Status |
 |-------|----------|------|--------|
 | [Travel Planner Agent](agents/travel_planner/) | Consumer | Gemini 2.5 Flash + Streamlit + Folium + Foursquare | Done |
-| Text to Podcast Agent | Media | TBD | Planned |
-| Investment Analyst Agent | Finance | TBD | Planned |
-| Marketing Content Agent | Business | TBD | Planned |
+| [Marketing Campaign Agent](agents/marketing_agent/) | Business | Gemini 2.5 Flash Lite + Streamlit + BeautifulSoup | Done |
+| [Research Agent](agents/research_agent/) | Research | Gemini 2.5 Flash Lite + Streamlit + DuckDuckGo | Done |
+| [Job Application Agent](agents/job_application_agent/) | Career | Gemini 2.5 Flash Lite + Streamlit + DuckDuckGo | Done |
+| [Data Analyst Agent](agents/data_analyst_agent/) | Analytics | Gemini 2.5 Flash Lite + Streamlit + Pandas + Plotly | Done |
 
 ## Quick Start (any agent)
 
@@ -27,10 +28,11 @@ Each agent is fully standalone in its own directory under `agents/`. No shared d
 ```
 Agent-Factory/
 ├── agents/
-│   ├── travel_planner/    # Gemini + Streamlit + Folium + Foursquare
-│   ├── text_to_podcast/   # Coming soon
-│   ├── investment_analyst/ # Coming soon
-│   └── marketing_agent/   # Coming soon
+│   ├── travel_planner/         # Gemini + Streamlit + Folium + Foursquare
+│   ├── marketing_agent/        # Gemini + Streamlit + BeautifulSoup
+│   ├── research_agent/         # Gemini + Streamlit + DuckDuckGo + BeautifulSoup
+│   ├── job_application_agent/  # Gemini + Streamlit + DuckDuckGo + BeautifulSoup
+│   └── data_analyst_agent/     # Gemini + Streamlit + Pandas + Plotly
 ├── CLAUDE.md
 ├── .gitignore
 └── .env.example

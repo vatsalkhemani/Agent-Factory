@@ -83,6 +83,8 @@ class AnalysisToolkit:
                 if cv > 2:
                     quality_notes.append(f"Column '{col}' has very high variance (CV={cv:.1f})")
 
+            columns.append(profile)
+
         return DataProfile(
             row_count=len(self.df),
             column_count=len(self.df.columns),
