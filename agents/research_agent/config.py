@@ -1,4 +1,8 @@
-GEMINI_MODEL = "gemini-2.5-flash-lite"
+GEMINI_MODEL = "gemini-2.5-flash-lite"  # default / fallback
+MODEL_PLANNING = "gemini-2.5-flash-lite"  # planning & extraction (10 RPM)
+MODEL_EXTRACTION = "gemini-3.1-flash-lite"  # fact extraction (15 RPM)
+MODEL_EVALUATION = "gemini-3.1-flash-lite"  # lightweight scoring (15 RPM)
+MODEL_SYNTHESIS = "gemini-2.5-flash"  # creative report writing (5 RPM)
 ANALYSIS_TEMPERATURE = 0.3
 SYNTHESIS_TEMPERATURE = 0.7
 MAX_ITERATIONS = 4

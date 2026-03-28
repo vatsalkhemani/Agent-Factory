@@ -1,7 +1,7 @@
 import json
 
 from gemini_client import GeminiClient
-from config import ANALYSIS_TEMPERATURE
+from config import ANALYSIS_TEMPERATURE, MODEL_INTERPRET
 from models import DataProfile, AnalysisResult, Finding, ChartSpec
 from prompts.interpreter_prompts import interpret_prompt
 
@@ -40,7 +40,7 @@ def interpret_results(
     results_text = _format_results(results)
 
     system, prompt = interpret_prompt(profile_text, results_text)
-    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE, model=MODEL_INTERPRET)
 
     findings = []
     for f in data.get("findings", []):

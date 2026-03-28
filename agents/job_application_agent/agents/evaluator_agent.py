@@ -1,5 +1,5 @@
 from gemini_client import GeminiClient
-from config import ANALYSIS_TEMPERATURE
+from config import ANALYSIS_TEMPERATURE, MODEL_EVALUATION
 from models import ParsedJob, TailoredResume, CoverLetter, ATSScore
 from prompts.evaluator_prompts import ats_evaluation_prompt
 
@@ -15,7 +15,7 @@ def evaluate_ats(
     job_text = parsed_job.model_dump_json(indent=2)
 
     system, prompt = ats_evaluation_prompt(resume_text, cl_text, job_text)
-    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE, model=MODEL_EVALUATION)
 
     return ATSScore(
         keyword_match_score=int(data.get("keyword_match_score", 5)),

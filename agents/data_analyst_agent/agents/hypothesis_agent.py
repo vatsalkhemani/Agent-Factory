@@ -1,7 +1,7 @@
 import json
 
 from gemini_client import GeminiClient
-from config import ANALYSIS_TEMPERATURE, MAX_HYPOTHESES
+from config import ANALYSIS_TEMPERATURE, MAX_HYPOTHESES, MODEL_HYPOTHESIS, MODEL_DEEP_DIVE
 from models import DataProfile, AnalysisPlan, Hypothesis, AnalysisRequest
 from prompts.hypothesis_prompts import hypothesis_prompt, deep_dive_prompt
 
@@ -37,7 +37,7 @@ def generate_hypotheses(
 ) -> AnalysisPlan:
     profile_text = _format_profile(profile)
     system, prompt = hypothesis_prompt(profile_text, user_context)
-    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE, model=MODEL_HYPOTHESIS)
 
     hypotheses = []
     for h in data.get("hypotheses", [])[:MAX_HYPOTHESES]:
@@ -64,7 +64,7 @@ def generate_deep_dives(
     """Returns list of dicts with finding_index and additional_analyses."""
     profile_text = _format_profile(profile)
     system, prompt = deep_dive_prompt(findings_text, profile_text)
-    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE, model=MODEL_DEEP_DIVE)
 
     deep_dives = []
     for dd in data.get("deep_dives", []):

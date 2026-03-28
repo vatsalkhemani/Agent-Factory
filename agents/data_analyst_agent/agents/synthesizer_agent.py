@@ -1,7 +1,7 @@
 import json
 
 from gemini_client import GeminiClient
-from config import CREATIVE_TEMPERATURE
+from config import CREATIVE_TEMPERATURE, MODEL_SYNTHESIS
 from models import DataProfile, Finding
 from prompts.synthesizer_prompts import synthesis_prompt
 
@@ -39,7 +39,7 @@ def synthesize_report(
     findings_text = _format_findings(findings)
 
     system, prompt = synthesis_prompt(profile_text, findings_text)
-    data = client.generate_json(prompt, system, temperature=CREATIVE_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=CREATIVE_TEMPERATURE, model=MODEL_SYNTHESIS)
 
     return {
         "dataset_summary": data.get("dataset_summary", ""),

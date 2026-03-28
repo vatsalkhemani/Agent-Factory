@@ -1,5 +1,5 @@
 from gemini_client import GeminiClient
-from config import SYNTHESIS_TEMPERATURE
+from config import SYNTHESIS_TEMPERATURE, MODEL_SYNTHESIS
 from models import (
     ExtractedFact, ReasoningStep, ResearchReport,
     ReportSection, SourceCitation,
@@ -35,7 +35,7 @@ def synthesize(
     sources_list = _build_sources_list(all_facts)
 
     system, prompt = synthesis_prompt(question, facts_text, sources_list)
-    data = client.generate_json(prompt, system, temperature=SYNTHESIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=SYNTHESIS_TEMPERATURE, model=MODEL_SYNTHESIS)
 
     # Parse sections
     sections = []

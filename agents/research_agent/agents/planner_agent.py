@@ -1,12 +1,12 @@
 from gemini_client import GeminiClient
-from config import ANALYSIS_TEMPERATURE
+from config import ANALYSIS_TEMPERATURE, MODEL_PLANNING
 from models import SearchPlan, SearchQuery
 from prompts.planner_prompts import initial_plan_prompt, replan_prompt
 
 
 def create_initial_plan(client: GeminiClient, question: str) -> SearchPlan:
     system, prompt = initial_plan_prompt(question)
-    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE, model=MODEL_PLANNING)
 
     queries = [SearchQuery(**q) for q in data.get("queries", [])]
     focus_areas = data.get("focus_areas", [])
@@ -20,7 +20,7 @@ def create_initial_plan(client: GeminiClient, question: str) -> SearchPlan:
 
 def replan(client: GeminiClient, question: str, facts_text: str, gaps: list[str], next_focus: str) -> SearchPlan:
     system, prompt = replan_prompt(question, facts_text, gaps, next_focus)
-    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE, model=MODEL_PLANNING)
 
     queries = [SearchQuery(**q) for q in data.get("queries", [])]
     focus_areas = data.get("focus_areas", [])

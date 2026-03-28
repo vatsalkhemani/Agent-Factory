@@ -1,7 +1,7 @@
 import json
 
 from gemini_client import GeminiClient
-from config import ANALYSIS_TEMPERATURE
+from config import ANALYSIS_TEMPERATURE, MODEL_EXTRACTION
 from models import ExtractedFact, ExtractionResult, SearchResult
 from prompts.extractor_prompts import extraction_prompt
 
@@ -38,7 +38,7 @@ def extract_facts(
     facts_text = _format_existing_facts(existing_facts)
 
     system, prompt = extraction_prompt(question, results_text, facts_text)
-    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE, model=MODEL_EXTRACTION)
 
     facts = []
     for f in data.get("facts", []):

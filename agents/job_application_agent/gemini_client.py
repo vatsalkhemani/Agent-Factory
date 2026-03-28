@@ -18,7 +18,7 @@ class GeminiClient:
         self.client = genai.Client(api_key=api_key)
         self.model = GEMINI_MODEL
 
-    def generate(self, prompt: str, system_instruction: str = "", temperature: float = 0.7) -> str:
+    def generate(self, prompt: str, system_instruction: str = "", temperature: float = 0.7, model: str = "") -> str:
         config = genai.types.GenerateContentConfig(
             temperature=temperature,
             max_output_tokens=8192,
@@ -28,7 +28,7 @@ class GeminiClient:
         for attempt in range(4):
             try:
                 response = self.client.models.generate_content(
-                    model=self.model,
+                    model=model or self.model,
                     contents=prompt,
                     config=config,
                 )
@@ -103,13 +103,13 @@ class GeminiClient:
 
         raise json.JSONDecodeError("No valid JSON found", text, 0)
 
-    def generate_json(self, prompt: str, system_instruction: str = "", temperature: float = 0.7) -> dict:
+    def generate_json(self, prompt: str, system_instruction: str = "", temperature: float = 0.7, model: str = "") -> dict:
         json_instruction = (
             (system_instruction + "\n\n") if system_instruction else ""
         ) + "IMPORTANT: Respond ONLY with valid JSON. No markdown, no code fences, no explanation. Ensure all string values are properly escaped. If returning multiple items, wrap them in a JSON array."
 
         for attempt in range(3):
-            text = self.generate(prompt, json_instruction, temperature)
+            text = self.generate(prompt, json_instruction, temperature, model=model)
             try:
                 return self._parse_json_robust(text)
             except json.JSONDecodeError:

@@ -1,5 +1,5 @@
 from gemini_client import GeminiClient
-from config import ANALYSIS_TEMPERATURE
+from config import ANALYSIS_TEMPERATURE, MODEL_EVALUATION
 from models import CoverageEvaluation, ExtractedFact
 from prompts.evaluator_prompts import evaluation_prompt
 
@@ -21,7 +21,7 @@ def evaluate_coverage(
 ) -> CoverageEvaluation:
     facts_text = _format_all_facts(all_facts)
     system, prompt = evaluation_prompt(question, facts_text, iteration)
-    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE)
+    data = client.generate_json(prompt, system, temperature=ANALYSIS_TEMPERATURE, model=MODEL_EVALUATION)
 
     return CoverageEvaluation(
         coverage_score=int(data.get("coverage_score", 5)),
