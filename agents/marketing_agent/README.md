@@ -101,7 +101,7 @@ The user receives:
 - **All Content Pieces** — organized by channel, ready to use
 - **Download option** — export everything as a packaged file
 
-## What Makes This Agentic (Not Just a Prompt Wrapper)
+## What Makes This Truly Agentic
 
 | Feature | Prompt Wrapper | This Agent |
 |---------|---------------|------------|
@@ -113,7 +113,7 @@ The user receives:
 | Consistency | Random per piece | Brand voice guide enforced across all content |
 
 ## Tech Stack
-- **LLM**: Google Gemini 2.5 Flash — fast, capable, cost-effective for multi-step agent work
+- **LLM**: Google Gemini 3.1 Flash Lite — fast, capable, cost-effective for multi-step agent work
 - **UI**: Streamlit — rapid prototyping, real-time status updates
 - **Web Scraping**: BeautifulSoup + requests — lightweight product/competitor research
 - **Architecture**: Orchestrator-Worker pattern with Evaluator-Optimizer loop

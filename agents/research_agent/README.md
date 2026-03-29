@@ -37,7 +37,7 @@ The key: the second round of searches is informed by what the first round found.
 5. Get a structured report with executive summary, sections, key findings, and full source citations
 6. Download the report as markdown
 
-## What Makes This an Agent (Not a Wrapper)
+## What Makes This Truly Agentic
 
 - **Autonomous search planning**: The agent decides what to search. You just ask the question.
 - **Self-evaluation**: The agent scores its own coverage and identifies specific gaps -- not a fixed number of searches.
@@ -64,7 +64,7 @@ streamlit run app.py
 
 ## Tech Stack
 
-- **LLM**: Gemini 2.5 Flash Lite (planning, extraction, evaluation, synthesis)
+- **LLM**: Gemini 3.1 Flash Lite (planning, extraction, evaluation, synthesis)
 - **Web Search**: DuckDuckGo via `duckduckgo-search` (free, no API key needed)
 - **Web Scraping**: BeautifulSoup (extract full page content from search results)
 - **UI**: Streamlit with live progress via `st.status()`

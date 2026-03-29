@@ -152,7 +152,7 @@ All string fields have `_coerce_to_str` validators for Gemini response robustnes
 
 ## Configuration
 
-- `GEMINI_MODEL`: gemini-2.5-flash-lite
+- `GEMINI_MODEL`: gemini-3.1-flash-lite-preview
 - `ANALYSIS_TEMPERATURE`: 0.3 (parsing, evaluation)
 - `CREATIVE_TEMPERATURE`: 0.7 (tailoring, cover letter)
 - `REVISION_THRESHOLD`: 7 (ATS score below this triggers revision)

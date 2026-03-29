@@ -39,7 +39,7 @@ You paste a job description and your resume. The agent:
 5. Review results across 5 tabs: Gap Analysis, Tailored Resume (side-by-side with original), Cover Letter, Company Intel, ATS Scores
 6. Download tailored resume and cover letter as markdown
 
-## What Makes This an Agent (Not a Wrapper)
+## What Makes This Truly Agentic
 
 - **Autonomous company research**: Extracts company name from JD, finds the website, scrapes it, searches for news -- all without user input
 - **Self-evaluation with real criteria**: ATS scoring uses specific metrics (keyword overlap, format quality, relevance) not just "looks good"
@@ -66,7 +66,7 @@ streamlit run app.py
 
 ## Tech Stack
 
-- **LLM**: Gemini 2.5 Flash Lite (parsing, analysis, writing, evaluation)
+- **LLM**: Gemini 3.1 Flash Lite (parsing, analysis, writing, evaluation)
 - **Web Search**: DuckDuckGo via `duckduckgo-search` (free, no API key) for company research
 - **Web Scraping**: BeautifulSoup for company website content
 - **UI**: Streamlit with live progress, side-by-side comparison, score badges

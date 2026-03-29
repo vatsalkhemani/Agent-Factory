@@ -23,7 +23,7 @@ Every agent in `agents/<agent-name>/` must have:
 | Agent | Directory | Status |
 |-------|-----------|--------|
 | Travel Planner Agent | `agents/travel_planner/` | Done (Gemini 2.5 Flash + Streamlit + Folium + Foursquare) |
-| Marketing Campaign Agent | `agents/marketing_agent/` | Done (Gemini 2.5 Flash Lite + Streamlit + BeautifulSoup) |
-| Research Agent | `agents/research_agent/` | Done (Gemini 2.5 Flash Lite + Streamlit + DuckDuckGo + BeautifulSoup) |
-| Job Application Agent | `agents/job_application_agent/` | Done (Gemini 2.5 Flash Lite + Streamlit + DuckDuckGo + BeautifulSoup) |
-| Data Analyst Agent | `agents/data_analyst_agent/` | Done (Gemini 2.5 Flash Lite + Streamlit + Pandas + Plotly) |
+| Marketing Campaign Agent | `agents/marketing_agent/` | Done (Gemini 3.1 Flash Lite + Streamlit + BeautifulSoup) |
+| Research Agent | `agents/research_agent/` | Done (Gemini 3.1 Flash Lite + Streamlit + DuckDuckGo + BeautifulSoup) |
+| Job Application Agent | `agents/job_application_agent/` | Done (Gemini 3.1 Flash Lite + Streamlit + DuckDuckGo + BeautifulSoup) |
+| Data Analyst Agent | `agents/data_analyst_agent/` | Done (Gemini 3.1 Flash Lite + Streamlit + Pandas + Plotly) |

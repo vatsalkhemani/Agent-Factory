@@ -155,7 +155,7 @@ All string fields have `_coerce_to_str` validators to handle Gemini returning di
 ## Configuration
 
 All constants in config.py:
-- `GEMINI_MODEL`: gemini-2.5-flash-lite
+- `GEMINI_MODEL`: gemini-3.1-flash-lite-preview
 - `MAX_ITERATIONS`: 4 (hard ceiling)
 - `MIN_ITERATIONS`: 2 (minimum before convergence check)
 - `COVERAGE_THRESHOLD`: 8 (score to stop)

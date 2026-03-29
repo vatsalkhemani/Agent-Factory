@@ -203,7 +203,7 @@ CampaignPackage(brief, analysis, positioning, voice_guide, content, scores)
 
 Single wrapper around the Gemini API:
 - `GeminiClient` class initialized with API key from `.env`
-- Uses `gemini-2.5-flash` model for all calls
+- Uses `gemini-3.1-flash-lite-preview` model for all calls
 - `generate(prompt, system_instruction)` → returns text response
 - `generate_json(prompt, system_instruction)` → returns parsed JSON (using Gemini's JSON mode)
 - Temperature: 0.7 for content generation, 0.3 for analysis/evaluation
@@ -238,7 +238,7 @@ Single wrapper around the Gemini API:
 ## Configuration (config.py)
 
 ```python
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
 CONTENT_TEMPERATURE = 0.7
 ANALYSIS_TEMPERATURE = 0.3
 SCRAPE_TIMEOUT = 10

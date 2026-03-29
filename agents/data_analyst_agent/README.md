@@ -39,7 +39,7 @@ You upload a CSV file. The agent:
 5. Review results across 4 tabs: Key Findings (with importance badges), Charts (interactive Plotly), Full Report (narrative), Data Profile (column stats)
 6. Download the report as markdown
 
-## What Makes This an Agent (Not a Wrapper)
+## What Makes This Truly Agentic
 
 - **The agent DECIDES what to analyze.** You just upload data.
 - **Hypothesis-driven**: It doesn't just compute everything -- it forms specific hypotheses and tests them
@@ -66,7 +66,7 @@ streamlit run app.py
 
 ## Tech Stack
 
-- **LLM**: Gemini 2.5 Flash Lite (hypothesis generation, interpretation, synthesis)
+- **LLM**: Gemini 3.1 Flash Lite (hypothesis generation, interpretation, deep dive, synthesis)
 - **Data Analysis**: pandas + numpy (predefined toolkit, no arbitrary code execution)
 - **Visualization**: Plotly Express (7 chart types)
 - **UI**: Streamlit with file uploader, interactive charts, progress display
