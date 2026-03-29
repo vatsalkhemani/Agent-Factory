@@ -2,6 +2,10 @@
 
 An autonomous data analysis agent. Upload a CSV and the agent profiles it, forms hypotheses about what's interesting, tests them using a predefined analysis toolkit, deep-dives into the most important findings, generates charts, and writes a narrative report. You don't tell it what to analyze -- it decides.
 
+![Data Analyst Agent - Pipeline Phases](screenshots/pipeline_phases.png)
+
+![Data Analyst Agent - Analysis Report](screenshots/analysis_report.png)
+
 ## The Problem
 
 You have a CSV full of data. You could spend hours writing pandas code, testing hypotheses, and making charts. Or you could upload it and let an agent do the exploration for you -- including figuring out what's worth exploring.

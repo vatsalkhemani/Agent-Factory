@@ -1,8 +1,8 @@
-GEMINI_MODEL = "gemini-2.5-flash-lite"  # default / fallback
-MODEL_HYPOTHESIS = "gemini-2.5-flash-lite"  # hypothesis generation (10 RPM)
-MODEL_INTERPRET = "gemini-3.1-flash-lite"  # result interpretation (15 RPM)
-MODEL_DEEP_DIVE = "gemini-3-flash"  # deep dive analysis (5 RPM)
-MODEL_SYNTHESIS = "gemini-2.5-flash"  # report writing (5 RPM)
+GEMINI_MODEL = "gemini-3.1-flash-lite-preview"  # default / fallback
+MODEL_HYPOTHESIS = "gemini-3.1-flash-lite-preview"  # hypothesis generation (15 RPM)
+MODEL_INTERPRET = "gemini-3.1-flash-lite-preview"  # result interpretation (15 RPM)
+MODEL_DEEP_DIVE = "gemini-3.1-flash-lite-preview"  # deep dive analysis (15 RPM)
+MODEL_SYNTHESIS = "gemini-3.1-flash-lite-preview"  # report writing (15 RPM)
 ANALYSIS_TEMPERATURE = 0.3
 CREATIVE_TEMPERATURE = 0.7
 LLM_TIMEOUT = 30

@@ -1,8 +1,8 @@
-GEMINI_MODEL = "gemini-2.5-flash-lite"  # default / fallback
-MODEL_PARSING = "gemini-3.1-flash-lite"  # structured parsing (15 RPM)
-MODEL_ANALYSIS = "gemini-2.5-flash-lite"  # gap analysis, research (10 RPM)
-MODEL_EVALUATION = "gemini-3.1-flash-lite"  # ATS scoring (15 RPM)
-MODEL_CREATIVE = "gemini-2.5-flash"  # resume tailoring, cover letters (5 RPM)
+GEMINI_MODEL = "gemini-3.1-flash-lite-preview"  # default / fallback
+MODEL_PARSING = "gemini-3.1-flash-lite-preview"  # structured parsing (15 RPM)
+MODEL_ANALYSIS = "gemini-3.1-flash-lite-preview"  # gap analysis, research (15 RPM)
+MODEL_EVALUATION = "gemini-3.1-flash-lite-preview"  # ATS scoring (15 RPM)
+MODEL_CREATIVE = "gemini-3.1-flash-lite-preview"  # resume tailoring, cover letters (15 RPM)
 ANALYSIS_TEMPERATURE = 0.3
 CREATIVE_TEMPERATURE = 0.7
 REVISION_THRESHOLD = 7

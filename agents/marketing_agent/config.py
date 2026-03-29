@@ -1,4 +1,4 @@
-GEMINI_MODEL = "gemini-2.5-flash-lite"
+GEMINI_MODEL = "gemini-3.1-flash-lite-preview"
 CONTENT_TEMPERATURE = 0.7
 ANALYSIS_TEMPERATURE = 0.3
 SCRAPE_TIMEOUT = 10
