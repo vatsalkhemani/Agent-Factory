@@ -4,6 +4,18 @@
 
 You give it a product URL and a target audience. It gives you back a complete, coherent marketing campaign — not random copy, but a researched, strategized, multi-channel content package.
 
+<p align="center">
+  <img src="screenshots/pipeline_dashboard.png" alt="Pipeline & Campaign Dashboard" width="700"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/product_intelligence.png" alt="Product Intelligence & Competitive Analysis" width="700"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/content_posts.png" alt="Generated Content Posts" width="700"/>
+</p>
+
 Most AI marketing tools are glorified prompt wrappers: "write me a LinkedIn post." That's not marketing. Real marketing is research-driven, strategically planned, and consistent across every touchpoint. This agent does what a marketing strategist does — it just does it in minutes.
 
 ## The Problem

@@ -2,6 +2,14 @@
 
 An autonomous research agent that takes a question, breaks it into sub-queries, searches the web, extracts facts, evaluates coverage, replans to fill gaps, and synthesizes a comprehensive cited report. The agent decides what to search, when to stop, and how to structure the answer.
 
+<p align="center">
+  <img src="screenshots/pipeline_report.png" alt="Research Pipeline & Report Summary" width="700"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/report_findings.png" alt="Research Report - Key Findings" width="700"/>
+</p>
+
 ## The Problem
 
 Researching a complex topic means searching for multiple angles, cross-referencing sources, identifying what's still missing, and synthesizing findings into something coherent. A single Google search and skim doesn't cut it for real research.
