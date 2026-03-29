@@ -2,6 +2,18 @@
 
 An AI agent that takes a job description and your resume, then autonomously: analyzes the gap, researches the company, tailors your resume, writes a personalized cover letter, self-evaluates against ATS criteria, and revises weak sections. You paste two text blocks; it delivers a complete application package.
 
+<p align="center">
+  <img src="screenshots/pipeline_phases.png" alt="Pipeline Phases" width="700"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/application_package.png" alt="Application Package - Company Intel" width="700"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/skills_analysis.png" alt="Skills Gap Analysis & ATS Scores" width="700"/>
+</p>
+
 ## The Problem
 
 Every job application should be tailored. But manually rewriting your resume and cover letter for each job is tedious. You need to identify which skills match, research the company, reframe your experience, and make sure you hit the right keywords -- all while keeping it authentic.
